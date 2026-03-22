@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🔥 HNACH ULTRA PANEL</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: white;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #ff3c00, #000);
+    opacity: 0.15;
+    z-index: -1;
+}
+
+.container {
+    text-align: center;
+    padding: 30px;
+}
+
+h1 {
+    color: #ff3c00;
+    text-shadow: 0 0 25px red;
+}
+
+button {
+    margin: 8px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    background: #111;
+    color: white;
+    box-shadow: 0 0 10px red;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: scale(1.1);
+    background: red;
+}
+
+input {
+    margin: 6px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 200px;
+    text-align: center;
+}
+
+.card {
+    background: rgba(0,0,0,0.7);
+    padding: 15px;
+    margin: 15px auto;
+    border-radius: 15px;
+    width: 90%;
+    text-align: left;
+    box-shadow: 0 0 20px red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>🔥 CH9AYFA ULTRA PANEL</h1>
+
+<button onclick="checkBand()">Check Ban</button>
+<button onclick="getJWT()">JWT</button>
+<button onclick="getInfo()">Info</button>
+<button onclick="getInfoPro()">Info Pro</button>
+<button onclick="askAI()">AI</button>
+
+<br><br>
+
+<input id="uid" placeholder="UID">
+<input id="password" placeholder="Password">
+<input id="msg" placeholder="AI Message">
+
+<div id="result"></div>
+</div>
+
+<script>
+const result = document.getElementById("result");
+
+/* 🔥 CHECK BAN */
+async function checkBand() {
+    let uid = document.getElementById("uid").value;
+    let r = await fetch(`https://check-band-ch9ayfa-production.up.railway.app/check?key=ch9ayfa&uid=${uid}`);
+    let d = await r.json();
+
+    let emoji = d.account_status === "BANNED" ? "🚫" : "✅";
+
+    result.innerHTML = `
+    <div class="card">
+    ${emoji} <b>Status:</b> ${d.account_status}<br>
+    👤 ${d.nickname}<br>
+    🌍 ${d.region}<br>
+    🆔 ${d.uid}
+    </div>`;
+}
+
+/* 🔐 JWT */
+async function getJWT() {
+    let uid = document.getElementById("uid").value;
+    let pass = document.getElementById("password").value;
+
+    let r = await fetch(`https://ch9ayfa-jwt-all.up.railway.app/get?uid=${uid}&password=${pass}`);
+    let d = await r.json();
+
+    result.innerHTML = `
+    <div class="card">
+    🔐 <b>JWT</b><br><br>
+    🌍 Region: ${d.region}<br>
+    📜 Token:<br><small>${d.token}</small>
+    </div>`;
+}
+
+/* 📊 INFO NORMAL (FULL) */
+async function getInfo() {
+    let uid = document.getElementById("uid").value;
+    let r = await fetch(`https://info-ch9ayfa-production.up.railway.app/${uid}`);
+    let d = await r.json();
+
+    let i = d.basicinfo[0];
+    let clan = d.claninfo[0];
+    let admin = d.clanadmin[0];
+    let owner = d.Owner;
+
+    result.innerHTML = `
+
+    <div class="card">
+    👤 <b>BASIC INFO</b><br><br>
+    🏷 Username: ${i.username}<br>
+    🧬 Bio: ${i.bio}<br>
+    ⭐ Level: ${i.level}<br>
+    ❤️ Likes: ${i.likes}<br>
+    🌍 Region: ${i.region}<br>
+    🏆 BR Score: ${i.brrankscore}<br>
+    ⚔️ CS Score: ${i.csrankscore}<br>
+    🎯 BR Points: ${i.brrankpoint}<br>
+    🎯 CS Points: ${i.csrankpoint}<br>
+    🎖 Badges: ${i.BadgeCount}<br>
+    📅 Created: ${i.createat}<br>
+    ⏱ Last Login: ${i.lastlogin}<br>
+    🖼 Avatar: ${i.avatar}<br>
+    🏳 Banner: ${i.banner}<br>
+    🎮 Version: ${i.OB}
+    </div>
+
+    <div class="card">
+    🏆 <b>CLAN INFO</b><br><br>
+    🆔 ID: ${clan.clanid}<br>
+    📛 Name: ${clan.clanname}<br>
+    👥 Members: ${clan.livemember}<br>
+    🎚 Level: ${clan.guildlevel}
+    </div>
+
+    <div class="card">
+    👑 <b>CLAN ADMIN</b><br><br>
+    👤 Name: ${admin.adminname}<br>
+    🆔 ID: ${admin.idadmin}<br>
+    ⭐ Level: ${admin.level}<br>
+    🎯 EXP: ${admin.exp}<br>
+    🏆 BR: ${admin.brpoint}<br>
+    ⚔️ CS: ${admin.cspoint}<br>
+    ⏱ Last Login: ${admin.lastlogin}
+    </div>
+
+    <div class="card">
+    🧑‍💻 <b>OWNER</b><br><br>
+    📢 ${owner.join(", ")}
+    </div>
+    `;
+}
+
+/* 🚀 INFO PRO (FULL) */
+async function getInfoPro() {
+    let uid = document.getElementById("uid").value;
+    let r = await fetch(`https://ch9ayfa-info-v10-production.up.railway.app/get?uid=${uid}`);
+    let d = await r.json();
+
+    let i = d.data.basicInfo;
+    let clan = d.data.clanBasicInfo;
+    let credit = d.data.creditScoreInfo;
+    let pet = d.data.petInfo;
+    let profile = d.data.profileInfo;
+    let social = d.data.socialInfo;
+    let diamond = d.data.diamondCostRes;
+
+    result.innerHTML = `
+
+    <div class="card">
+    👤 <b>BASIC INFO</b><br><br>
+    🆔 UID: ${i.accountId}<br>
+    🏷 Nickname: ${i.nickname}<br>
+    ⭐ Level: ${i.level}<br>
+    ❤️ Likes: ${i.liked}<br>
+    🌍 Region: ${i.region}<br>
+    🏅 Rank: ${i.rank}<br>
+    🎯 Ranking Points: ${i.rankingPoints}<br>
+    🏆 Max Rank: ${i.maxRank}<br>
+    ⚔️ CS Rank: ${i.csRank}<br>
+    🛡 CS Max Rank: ${i.csMaxRank}<br>
+    📅 Created At: ${i.createAt}<br>
+    ⏱ Last Login: ${i.lastLoginAt}<br>
+    🎮 Version: ${i.releaseVersion}<br>
+    🎯 Season: ${i.seasonId}<br>
+    🏅 Badge ID: ${i.badgeId}<br>
+    🖼 Banner ID: ${i.bannerId}<br>
+    📌 Pin ID: ${i.pinId}<br>
+    🎖 Title ID: ${i.title}<br>
+    🔫 Weapon Skins: ${i.weaponSkinShows.join(", ")}<br>
+    </div>
+
+    <div class="card">
+    🌐 <b>EXTERNAL INFO</b><br><br>
+    👁 Show Type: ${i.externalIconInfo.showType}<br>
+    📡 Status: ${i.externalIconInfo.status}
+    </div>
+
+    <div class="card">
+    🏆 <b>CLAN INFO</b><br><br>
+    🆔 Clan ID: ${clan.clanId}<br>
+    📛 Name: ${clan.clanName}<br>
+    👥 Members: ${clan.memberNum}/${clan.capacity}<br>
+    👑 Captain ID: ${clan.captainId}<br>
+    🎚 Level: ${clan.clanLevel}
+    </div>
+
+    <div class="card">
+    🛡 <b>CREDIT SCORE</b><br><br>
+    💯 Score: ${credit.creditScore}<br>
+    🎁 Reward State: ${credit.rewardState}<br>
+    ⏳ End Time: ${credit.periodicSummaryEndTime}
+    </div>
+
+    <div class="card">
+    💎 <b>DIAMOND COST</b><br><br>
+    💰 Diamonds: ${diamond.diamondCost}
+    </div>
+
+    <div class="card">
+    🐾 <b>PET INFO</b><br><br>
+    🆔 Pet ID: ${pet.id}<br>
+    ⭐ Level: ${pet.level}<br>
+    🎯 EXP: ${pet.exp}<br>
+    🎨 Skin ID: ${pet.skinId}<br>
+    🧠 Skill ID: ${pet.selectedSkillId}<br>
+    ✅ Selected: ${pet.isSelected}
+    </div>
+
+    <div class="card">
+    🎭 <b>PROFILE INFO</b><br><br>
+    🖼 Avatar: ${profile.avatarId}<br>
+    🎽 Clothes: ${profile.clothes.join(", ")}<br>
+    🧠 Skills: ${profile.equipedSkills.join(", ")}<br>
+    🎨 Skin Color: ${profile.skinColor}<br>
+    ✅ Selected: ${profile.isSelected}<br>
+    ⚡ Awaken: ${profile.isSelectedAwaken}
+    </div>
+
+    <div class="card">
+    🌍 <b>SOCIAL INFO</b><br><br>
+    🆔 UID: ${social.accountId}<br>
+    🗣 Language: ${social.language}<br>
+    🏆 Rank Show: ${social.rankShow}<br>
+    ✍ Signature: ${social.signature}
+    </div>
+
+    <div class="card">
+    📡 <b>DETECTED</b><br><br>
+    🌍 Region Detected: ${d.region_detected}<br>
+    🆔 UID: ${d.uid}
+    </div>
+
+    `;
+}
+
+/* 🤖 AI */
+async function askAI() {
+    let msg = document.getElementById("msg").value;
+    let r = await fetch(`https://ch9ayfa-ai.up.railway.app/ai?msg=${msg}`);
+    let d = await r.json();
+
+    result.innerHTML = `
+    <div class="card">
+    🤖 ${d}
+    </div>`;
+}
+</script>
+
+</body>
+</html>
