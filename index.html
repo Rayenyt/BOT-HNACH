@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🔥 HNACH ULTRA PANEL</title>
+<style>
+/* === BODY & BACKGROUND === */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    overflow-x: hidden;
+}
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+body::before {
+    content:"";
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, #ff3c00, #ff0066, #ffcc00, #00ffff);
+    background-size: 400% 400%;
+    animation: gradientBG 30s ease infinite;
+    opacity: 0.08;
+    z-index: -1;
+}
+
+/* === CONTAINER === */
+.container { text-align: center; padding: 30px; max-width: 1200px; margin: auto; }
+h1 { color: #ff3c00; text-shadow: 0 0 20px #ff3c00; margin-bottom: 20px; }
+
+/* === INPUTS & BUTTONS === */
+input {
+    margin: 6px;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    width: 200px;
+    text-align: center;
+    background: #111;
+    color: #fff;
+}
+button {
+    margin: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    background: #222;
+    color: #fff;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    box-shadow: 0 0 10px #ff3c00;
+}
+button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(45deg, #ff3c00, #ff6600);
+    box-shadow: 0 0 20px #ff6600;
+}
+
+/* === CARDS === */
+.card {
+    background: rgba(0,0,0,0.75);
+    margin: 20px auto;
+    border-radius: 20px;
+    width: 95%;
+    max-width: 900px;
+    text-align: left;
+    overflow: hidden;
+    box-shadow: 0 0 25px #ff3c00;
+    transition: transform 0.3s ease;
+}
+.card:hover { transform: scale(1.01); }
+.card-header {
+    cursor: pointer;
+    padding: 15px;
+    font-weight: bold;
+    background: rgba(255,60,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-content {
+    padding: 0 15px 15px 15px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+/* Loading */
+.loading { padding: 20px; text-align: center; font-size: 18px; animation: blink 1s infinite; }
+@keyframes blink { 0%,50%,100%{opacity:1;} 25%,75%{opacity:0;} }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔥 HNACH ULTRA PANEL</h1>
+
+<!-- Inputs & Buttons -->
+<div>
+<input id="uid_ban" placeholder="UID Check Ban">
+<button onclick="checkBan()">Check Ban</button>
+</div>
+
+<div>
+<input id="uid_info" placeholder="UID Info Normal">
+<button onclick="getInfoNormal()">Info Normal</button>
+</div>
+
+<div>
+<input id="uid_jwt" placeholder="UID JWT">
+<input id="password_jwt" placeholder="Password JWT">
+<button onclick="getJWT()">JWT</button>
+</div>
+
+<div>
+<input id="uid_info_pro" placeholder="UID Info Pro">
+<button onclick="getInfoPro()">Info Pro</button>
+</div>
+
+<div>
+<input id="msg_ai" placeholder="AI Message">
+<button onclick="askAI()">AI</button>
+</div>
+
+<div id="result"></div>
+</div>
+
+<script>
+const result = document.getElementById("result");
+
+/* Card Toggle */
+function toggleCard(e){
+    const content = e.nextElementSibling;
+    if(content.style.maxHeight){
+        content.style.maxHeight = null;
+    } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+    }
+}
+
+/* 🔥 Check Ban */
+async function checkBan(){
+    let uid = document.getElementById("uid_ban").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    try{
+        let r = await fetch(`https://check-band-ch9ayfa-production.up.railway.app/check?key=ch9ayfa&uid=${uid}`);
+        let d = await r.json();
+        let emoji = d.account_status === "BANNED" ? "🚫" : "✅";
+        result.innerHTML = `
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">Check Ban Result</div>
+            <div class="card-content">
+                ${emoji} <b>Status:</b> ${d.account_status}<br>
+                👤 Nickname: ${d.nickname}<br>
+                🌍 Region: ${d.region}<br>
+                🆔 UID: ${d.uid}
+            </div>
+        </div>`;
+    }catch(e){
+        result.innerHTML = `<div class="card"><div class="loading">❌ Error fetching data</div></div>`;
+    }
+}
+
+/* 📊 Info Normal */
+async function getInfoNormal(){
+    let uid = document.getElementById("uid_info").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    try{
+        let r = await fetch(`https://info-ch9ayfa-production.up.railway.app/${uid}`);
+        let d = await r.json();
+        let i = d.basicinfo[0];
+        let clan = d.claninfo[0];
+        let admin = d.clanadmin[0];
+        let owner = d.Owner;
+
+        result.innerHTML = `
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">Info Normal Result</div>
+            <div class="card-content">
+                👤 Username: ${i.username}<br>
+                🧬 Bio: ${i.bio}<br>
+                ⭐ Level: ${i.level}<br>
+                ❤️ Likes: ${i.likes}<br>
+                🌍 Region: ${i.region}<br>
+                🎖 Badges: ${i.BadgeCount}<br>
+                📅 Created: ${i.createat}<br>
+                ⏱ Last Login: ${i.lastlogin}<br>
+                🖼 Avatar: ${i.avatar}<br>
+                🏳 Banner: ${i.banner}<br>
+                🏆 BR Score: ${i.brrankscore} | ⚔️ CS Score: ${i.csrankscore}<br>
+                🎯 BR Points: ${i.brrankpoint} | 🎯 CS Points: ${i.csrankpoint}<br>
+                <hr>
+                🏆 Clan Name: ${clan.clanname}<br>
+                👥 Members: ${clan.livemember}<br>
+                🎚 Guild Level: ${clan.guildlevel}<br>
+                <hr>
+                👑 Admin: ${admin.adminname} (ID: ${admin.idadmin})<br>
+                ⭐ Level: ${admin.level} | 🎯 EXP: ${admin.exp}<br>
+                🏆 BR: ${admin.brpoint} | ⚔️ CS: ${admin.cspoint}<br>
+                ⏱ Last Login: ${admin.lastlogin}<br>
+                <hr>
+                🧑‍💻 Owner: ${owner.join(", ")}
+            </div>
+        </div>`;
+    }catch(e){
+        result.innerHTML = `<div class="card"><div class="loading">❌ Error fetching data</div></div>`;
+    }
+}
+
+/* 🔐 JWT */
+async function getJWT(){
+    let uid = document.getElementById("uid_jwt").value;
+    let pass = document.getElementById("password_jwt").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    try{
+        let r = await fetch(`https://ch9ayfa-jwt-all.up.railway.app/get?uid=${uid}&password=${pass}`);
+        let d = await r.json();
+        result.innerHTML = `
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">JWT Result</div>
+            <div class="card-content">
+                🌍 Region: ${d.region}<br>
+                📜 Token:<br><small>${d.token}</small>
+            </div>
+        </div>`;
+    }catch(e){
+        result.innerHTML = `<div class="card"><div class="loading">❌ Error fetching data</div></div>`;
+    }
+}
+
+/* 🚀 Info Pro */
+async function getInfoPro(){
+    let uid = document.getElementById("uid_info_pro").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    try{
+        let r = await fetch(`https://ch9ayfa-info-v10-production.up.railway.app/get?uid=${uid}`);
+        let d = await r.json();
+        let i = d.data.basicInfo;
+        let clan = d.data.clanBasicInfo;
+        let credit = d.data.creditScoreInfo;
+        let pet = d.data.petInfo;
+        let profile = d.data.profileInfo;
+        let social = d.data.socialInfo;
+        let diamond = d.data.diamondCostRes;
+
+        result.innerHTML = `
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">Info Pro Result</div>
+            <div class="card-content">
+                👤 UID: ${i.accountId}<br>
+                🏷 Nickname: ${i.nickname}<br>
+                ⭐ Level: ${i.level}<br>
+                ❤️ Likes: ${i.liked}<br>
+                🌍 Region: ${i.region}<br>
+                🏅 Rank: ${i.rank}<br>
+                🎯 Ranking Points: ${i.rankingPoints}<br>
+                🏆 Max Rank: ${i.maxRank}<br>
+                ⚔️ CS Rank: ${i.csRank}<br>
+                🛡 CS Max Rank: ${i.csMaxRank}<br>
+                📅 Created At: ${i.createAt}<br>
+                ⏱ Last Login: ${i.lastLoginAt}<br>
+                🎮 Version: ${i.releaseVersion}<br>
+                🎯 Season: ${i.seasonId}<br>
+                🏅 Badge ID: ${i.badgeId}<br>
+                🖼 Banner ID: ${i.bannerId}<br>
+                📌 Pin ID: ${i.pinId}<br>
+                🎖 Title ID: ${i.title}<br>
+                🔫 Weapon Skins: ${i.weaponSkinShows.join(", ")}<br>
+                <hr>
+                🌐 Show Type: ${i.externalIconInfo.showType}<br>
+                📡 Status: ${i.externalIconInfo.status}<br>
+                <hr>
+                🏆 Clan: ${clan.clanName} | Members: ${clan.memberNum}/${clan.capacity} | Level: ${clan.clanLevel}<br>
+                👑 Captain: ${clan.captainId}<br>
+                <hr>
+                💯 Credit Score: ${credit.creditScore} | Reward: ${credit.rewardState}<br>
+                ⏳ End Time: ${credit.periodicSummaryEndTime}<br>
+                💎 Diamond Cost: ${diamond.diamondCost}<br>
+                🐾 Pet: ID:${pet.id} | Lvl:${pet.level} | EXP:${pet.exp} | Skill:${pet.selectedSkillId} | Selected:${pet.isSelected}<br>
+                🖼 Profile: Avatar:${profile.avatarId} | Clothes:${profile.clothes.join(", ")} | Skills:${profile.equipedSkills.join(", ")} | SkinColor:${profile.skinColor} | Selected:${profile.isSelected} | Awaken:${profile.isSelectedAwaken}<br>
+                🌍 Social: UID:${social.accountId} | Language:${social.language} | RankShow:${social.rankShow} | Signature:${social.signature}<br>
+                🌍 Detected Region: ${d.region_detected} | UID: ${d.uid}
+            </div>
+        </div>`;
+    }catch(e){
+        result.innerHTML = `<div class="card"><div class="loading">❌ Error fetching data</div></div>`;
+    }
+}
+
+/* 🤖 AI */
+async function askAI(){
+    let msg = document.getElementById("msg_ai").value;
+    result.innerHTML = `<div class="card"><div class="loading">🤖 Loading AI...</div></div>`;
+    try{
+        let r = await fetch(`https://ch9ayfa-ai.up.railway.app/ai?msg=${msg}`);
+        let d = await r.json();
+        result.innerHTML = `
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">AI Response</div>
+            <div class="card-content">
+                🤖 ${d}
+            </div>
+        </div>`;
+    }catch(e){
+        result.innerHTML = `<div class="card"><div class="loading">❌ Error fetching AI</div></div>`;
+    }
+}
+</script>
+</body>
+</html>
