@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🔥 HNACH ULTRA PANEL</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* خلفية متحركة Solo Leveling effect */
+@keyframes solo {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
+}
+body::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    background: url('https://i.imgur.com/3q1I2qk.jpg') repeat;
+    background-size: cover;
+    animation: solo 60s linear infinite;
+    opacity: 0.05;
+    z-index: -1;
+}
+
+.container { text-align: center; padding: 30px; }
+
+h1 { color: #ff3c00; text-shadow: 0 0 25px red; }
+
+button {
+    margin: 8px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: none;
+    background: #111;
+    color: white;
+    box-shadow: 0 0 10px red;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button:hover { transform: scale(1.1); background: red; }
+
+input {
+    margin: 6px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    width: 200px;
+    text-align: center;
+}
+
+/* Cards */
+.card {
+    background: rgba(0,0,0,0.7);
+    margin: 20px auto;
+    border-radius: 20px;
+    width: 95%;
+    max-width: 800px;
+    text-align: left;
+    box-shadow: 0 0 25px #ff3c00;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.3s ease;
+}
+.card-header {
+    cursor: pointer;
+    padding: 15px;
+    font-weight: bold;
+    background: rgba(255, 60, 0, 0.2);
+}
+.card-content {
+    padding: 0 15px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+/* Glow animation */
+@keyframes glow {
+    0% { box-shadow: 0 0 15px #ff3c00; }
+    100% { box-shadow: 0 0 25px #ff6600; }
+}
+.card { animation: glow 2s ease-in-out infinite alternate; }
+
+/* Loading text */
+.loading { text-align: center; font-size: 18px; padding: 20px; animation: blink 1s infinite; }
+@keyframes blink { 0%,50%,100% { opacity:1; } 25%,75% { opacity:0; } }
+
+.section { margin: 20px auto; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 15px; box-shadow: 0 0 15px red; width: 95%; max-width: 800px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔥 HNZCH ULTRA PANEL</h1>
+
+<!-- Inputs لكل API -->
+<div class="section">
+<h3>🚫 Check Ban</h3>
+<input id="uid_ban" placeholder="Enter UID">
+<br>
+<button onclick="checkBand()">Check Ban</button>
+</div>
+
+<div class="section">
+<h3>🔐 JWT</h3>
+<input id="uid_jwt" placeholder="UID">
+<input id="pass_jwt" placeholder="Password">
+<br>
+<button onclick="getJWT()">Get JWT</button>
+</div>
+
+<div class="section">
+<h3>📊 Info Normal</h3>
+<input id="uid_info" placeholder="UID">
+<br>
+<button onclick="getInfo()">Get Info</button>
+</div>
+
+<div class="section">
+<h3>🚀 Info Pro</h3>
+<input id="uid_pro" placeholder="UID">
+<br>
+<button onclick="getInfoPro()">Get Info Pro</button>
+</div>
+
+<div class="section">
+<h3>🤖 AI</h3>
+<input id="msg_ai" placeholder="Message">
+<br>
+<button onclick="askAI()">Ask AI</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+const result = document.getElementById("result");
+
+/* فتح/غلق Card */
+function toggleCard(e){
+    const content = e.nextElementSibling;
+    if(content.style.maxHeight){
+        content.style.maxHeight = null;
+    } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+    }
+}
+
+/* 🔥 CHECK BAN */
+async function checkBand(){
+    let uid = document.getElementById("uid_ban").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    let r = await fetch(`https://check-band-ch9ayfa-production.up.railway.app/check?key=ch9ayfa&uid=${uid}`);
+    let d = await r.json();
+    let emoji = d.account_status === "BANNED" ? "🚫" : "✅";
+    result.innerHTML = `
+    <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">Check Ban Result</div>
+        <div class="card-content">
+            ${emoji} <b>Status:</b> ${d.account_status}<br>
+            👤 ${d.nickname}<br>
+            🌍 ${d.region}<br>
+            🆔 ${d.uid}
+        </div>
+    </div>`;
+}
+
+/* 🔐 JWT */
+async function getJWT(){
+    let uid = document.getElementById("uid_jwt").value;
+    let pass = document.getElementById("pass_jwt").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    let r = await fetch(`https://ch9ayfa-jwt-all.up.railway.app/get?uid=${uid}&password=${pass}`);
+    let d = await r.json();
+    result.innerHTML = `
+    <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">JWT Result</div>
+        <div class="card-content">
+            UID: ${uid}<br>
+            Password: ${pass}<br>
+            🌍 Region: ${d.region}<br>
+            📜 Token:<br><small>${d.token}</small>
+        </div>
+    </div>`;
+}
+
+/* 📊 INFO NORMAL */
+async function getInfo(){
+    let uid = document.getElementById("uid_info").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    let r = await fetch(`https://info-ch9ayfa-production.up.railway.app/${uid}`);
+    let d = await r.json();
+    let i = d.basicinfo[0];
+    let clan = d.claninfo[0];
+    let admin = d.clanadmin[0];
+    let owner = d.Owner;
+    result.innerHTML = `
+    <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">Info Normal</div>
+        <div class="card-content">
+            🏷 Username: ${i.username}<br>
+            🧬 Bio: ${i.bio}<br>
+            ⭐ Level: ${i.level}<br>
+            ❤️ Likes: ${i.likes}<br>
+            🌍 Region: ${i.region}<br>
+            🏆 BR Score: ${i.brrankscore}<br>
+            ⚔️ CS Score: ${i.csrankscore}<br>
+            🎖 Badges: ${i.BadgeCount}<br>
+            📅 Created: ${i.createat}<br>
+            ⏱ Last Login: ${i.lastlogin}<br>
+            🖼 Avatar: ${i.avatar}<br>
+            🏳 Banner: ${i.banner}<br>
+            🎮 Version: ${i.OB}<br>
+            <hr>
+            🏆 Clan: ${clan.clanname} (${clan.livemember} Members)<br>
+            👑 Admin: ${admin.adminname} (ID: ${admin.idadmin})<br>
+            📢 Owner: ${owner.join(", ")}
+        </div>
+    </div>`;
+}
+
+/* 🚀 INFO PRO */
+async function getInfoPro(){
+    let uid = document.getElementById("uid_pro").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    let r = await fetch(`https://ch9ayfa-info-v10-production.up.railway.app/get?uid=${uid}`);
+    let d = await r.json();
+    let i = d.data.basicInfo;
+    let clan = d.data.clanBasicInfo;
+    let credit = d.data.creditScoreInfo;
+    let pet = d.data.petInfo;
+    let profile = d.data.profileInfo;
+    let social = d.data.socialInfo;
+    let diamond = d.data.diamondCostRes;
+
+    result.innerHTML = `
+    <div class="card">
+        <div class="card-header" onclick="toggleCard(this)">Info Pro</div>
+        <div class="card-content">
+            👤 BASIC INFO:<br>
+            🆔 UID: ${i.accountId}<br>
+            🏷 Nickname: ${i.nickname}<br>
+            ⭐ Level: ${i.level}<br>
+            ❤️ Likes: ${i.liked}<br>
+            🌍 Region: ${i.region}<br>
+            🏅 Rank: ${i.rank}<br>
+            🎯 Ranking Points: ${i.rankingPoints}<br>
+            🏆 Max Rank: ${i.maxRank}<br>
+            ⚔️ CS Rank: ${i.csRank}<br>
+            🛡 CS Max Rank: ${i.csMaxRank}<br>
+            📅 Created At: ${i.createAt}<br>
+            ⏱ Last Login: ${i.lastLoginAt}<br>
+            🎮 Version: ${i.releaseVersion}<br>
+            🎯 Season: ${i.seasonId}<br>
+            🏅 Badge ID: ${i.badgeId}<br>
+            🖼 Banner ID: ${i.bannerId}<br>
+            📌 Pin ID: ${i.pinId}<br>
+            🎖 Title ID: ${i.title}<br>
+            🔫 Weapon Skins: ${i.weaponSkinShows.join(", ")}<br>
+            <hr>
+            🌐 EXTERNAL INFO:<br>
+            👁 Show Type: ${i.externalIconInfo.showType}<br>
+            📡 Status: ${i.externalIconInfo.status}<br>
+            <hr>
+            🏆 CLAN INFO:<br>
+            🆔 Clan ID: ${clan.clanId}<br>
+            📛 Name: ${clan.clanName}<br>
+            👥 Members: ${clan.memberNum}/${clan.capacity}<br>
+            👑 Captain ID: ${clan.captainId}<br>
+            🎚 Level: ${clan.clanLevel}<br>
+            <hr>
+            🛡 CREDIT SCORE:<br>
+            💯 Score: ${credit.creditScore}<br>
+            🎁 Reward State: ${credit.rewardState}<br>
+            ⏳ End Time: ${credit.periodicSummaryEndTime}<br>
+            <hr>
+            💎 DIAMOND COST:<br>
+            💰 Diamonds: ${diamond.diamondCost}<br>
+            <hr>
+            🐾 PET INFO:<br>
+            🆔 Pet ID: ${pet.id}<br>
+            ⭐ Level: ${pet.level}<br>
+            🎯 EXP: ${pet.exp}<br>
+            🎨 Skin ID: ${pet.skinId}<br>
+            🧠 Skill ID: ${pet.selectedSkillId}<br>
+            ✅ Selected: ${pet.isSelected}<br>
+            <hr>
+            🎭 PROFILE INFO:<br>
+            🖼 Avatar: ${profile.avatarId}<br>
+            🎽 Clothes: ${profile.clothes.join(", ")}<br>
+            🧠 Skills: ${profile.equipedSkills.join(", ")}<br>
+            🎨 Skin Color: ${profile.skinColor}<br>
+            ✅ Selected: ${profile.isSelected}<br>
+            ⚡ Awaken: ${profile.isSelectedAwaken}<br>
+            <hr>
+            🌍 SOCIAL INFO:<br>
+            🆔 UID: ${social.accountId}<br>
+            🗣 Language: ${social.language}<br>
+            🏆 Rank Show: ${social.rankShow}<br>
+            ✍ Signature: ${social.signature}<br>
+            <hr>
+            📡 DETECTED:<br>
+            🌍 Region Detected: ${d.region_detected}<br>
+            🆔 UID: ${d.uid}
+        </div>
+    </div>`;
+}
+
+/* 🤖 AI */
+async function askAI(){
+    let msg = document.getElementById("msg_ai").value;
+    result.innerHTML = `<div class="card"><div class="loading">🚀 Loading...</div></div>`;
+    let r = await fetch(`https://ch9ayfa-ai.up.railway.app/ai?msg=${msg}`);
+    let d = await r.json();
+    result.innerHTML = `<div class="card"><div class="card-header" onclick="toggleCard(this)">AI Response</div><div class="card-content">${d}</div></div>`;
+}
+</script>
+</body>
+</html>
